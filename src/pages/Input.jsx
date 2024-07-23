@@ -59,7 +59,7 @@ export default function Input({ onProfileData }) {
     const skillKeywords = [
       'JavaScript', 'React', 'Node.js', 'Express', 'MongoDB', 'Python',
       'Django', 'Flask', 'Java', 'Spring', 'C++', 'C#', 'PHP', 'Laravel',
-      'Ruby', 'Rails', 'HTML', 'CSS', 'SQL', 'TypeScript', 'GraphQL'
+      'Ruby', 'Rails', 'HTML', 'CSS', 'SQL', 'TypeScript', 'GraphQL', 'Go', 'Scala', 
     ];
 
     skillKeywords.forEach((skill) => {

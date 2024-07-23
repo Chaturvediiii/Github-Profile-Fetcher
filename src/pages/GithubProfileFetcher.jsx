@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 function GithubProfileFetcher({ profileData }) {
-  const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
   const [storedProfileData, setStoredProfileData] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
@@ -41,7 +40,6 @@ function GithubProfileFetcher({ profileData }) {
 
   return (
     <div className="bg-gray-900 text-white min-h-screen flex flex-col items-center p-4 md:p-8">
-
       {storedProfileData && storedProfileData.name ? (
         <>
           <div className="bg-gray-800 p-6 rounded-lg flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-8 w-full max-w-5xl">
@@ -62,7 +60,7 @@ function GithubProfileFetcher({ profileData }) {
           </div>
 
           <div className="mt-8 w-full max-w-5xl">
-            <div className="mb-4 flex flex-col ">
+            <div className="mb-4 flex flex-col">
               <input
                 type="text"
                 placeholder="Search by tech stack..."
@@ -118,4 +116,5 @@ function GithubProfileFetcher({ profileData }) {
 }
 
 export default GithubProfileFetcher;
+
 
