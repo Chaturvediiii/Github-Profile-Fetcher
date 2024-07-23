@@ -112,14 +112,14 @@ export default function Input({ onProfileData }) {
             </h1>
             <p className="text-gray-400 mb-4">
               To fetch a GitHub profile, please enter the username in the
-              format: <strong>https://github.com/username</strong>. We will
+              format: <strong>username</strong>. We will
               retrieve the profile details and display them for you.
             </p>
             <input
               type="text"
               value={githubUrl}
               onChange={(e) => setGithubUrl(e.target.value)}
-              placeholder="e.g. https://github.com/username"
+              placeholder="e.g. username"
               className="p-3 bg-gray-700 border border-gray-600 rounded-md text-white w-full mb-4"
             />
             <button
