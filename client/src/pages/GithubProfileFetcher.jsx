@@ -5,6 +5,8 @@ function GithubProfileFetcher({ profileData }) {
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
   const [storedProfileData, setStoredProfileData] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredRepos, setFilteredRepos] = useState([]);
   const reposPerPage = 9;
 
   useEffect(() => {
@@ -17,26 +19,28 @@ function GithubProfileFetcher({ profileData }) {
     }
   }, [profileData]);
 
+  useEffect(() => {
+    if (storedProfileData) {
+      filterRepos(searchTerm);
+    }
+  }, [searchTerm, storedProfileData]);
+
+  const filterRepos = (keyword) => {
+    const filtered = storedProfileData.repos.filter(repo =>
+      repo.language?.toLowerCase().includes(keyword.toLowerCase())
+    );
+    setFilteredRepos(filtered);
+    setCurrentPage(1); // Reset to first page on new search
+  };
+
   const indexOfLastRepo = currentPage * reposPerPage;
   const indexOfFirstRepo = indexOfLastRepo - reposPerPage;
-  const currentRepos = storedProfileData?.repos?.slice(indexOfFirstRepo, indexOfLastRepo) || [];
+  const currentRepos = filteredRepos.slice(indexOfFirstRepo, indexOfLastRepo);
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
     <div className="bg-gray-900 text-white min-h-screen flex flex-col items-center p-4 md:p-8">
-      <section className="text-center mb-8">
-        <h1 className="text-3xl font-bold mb-4">
-          View <span className="text-gray-500">{storedProfileData?.name ? `${storedProfileData.name}'s ` : ''}</span>
-          GitHub Profile Details
-        </h1>
-        <button
-          className="bg-gray-700 px-4 py-2 rounded mb-4"
-          onClick={() => navigate('/')}
-        >
-          Back
-        </button>
-      </section>
 
       {storedProfileData && storedProfileData.name ? (
         <>
@@ -58,36 +62,52 @@ function GithubProfileFetcher({ profileData }) {
           </div>
 
           <div className="mt-8 w-full max-w-5xl">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {currentRepos.map((repo) => (
-                <div key={repo.name} className="bg-gray-800 p-4 rounded">
-                  <h3 className="text-xl font-bold mb-2">{repo.name}</h3>
-                  <p className="text-gray-400 mb-2">{repo.description}</p>
-                  <p className="text-gray-400">Tech Stack: {repo.language || "N/A"}</p>
-                  <p className="text-gray-400">Stars: {repo.stargazers_count}</p>
-                  <a href={repo.url} target="_blank" rel="noopener noreferrer" className="text-blue-400 mt-2 inline-block">
-                    View Repository
-                  </a>
-                </div>
-              ))}
+            <div className="mb-4 flex flex-col ">
+              <input
+                type="text"
+                placeholder="Search by tech stack..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="bg-gray-800 p-2 rounded text-white mb-2 w-full max-w-sm"
+              />
             </div>
 
-            <div className="flex justify-center mt-4">
-              <button
-                onClick={() => paginate(currentPage - 1)}
-                disabled={currentPage === 1}
-                className="bg-gray-700 px-4 py-2 rounded mr-2 disabled:bg-gray-500"
-              >
-                Previous
-              </button>
-              <button
-                onClick={() => paginate(currentPage + 1)}
-                disabled={indexOfLastRepo >= storedProfileData.repos.length}
-                className="bg-gray-700 px-4 py-2 rounded disabled:bg-gray-500"
-              >
-                Next
-              </button>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {currentRepos.length > 0 ? (
+                currentRepos.map((repo) => (
+                  <div key={repo.name} className="bg-gray-800 p-4 rounded">
+                    <h3 className="text-xl font-bold mb-2">{repo.name}</h3>
+                    <p className="text-gray-400 mb-2">{repo.description}</p>
+                    <p className="text-gray-400">Tech Stack: {repo.language || "N/A"}</p>
+                    <p className="text-gray-400">Stars: {repo.stargazers_count}</p>
+                    <a href={repo.url} target="_blank" rel="noopener noreferrer" className="text-blue-400 mt-2 inline-block">
+                      View Repository
+                    </a>
+                  </div>
+                ))
+              ) : (
+                <p className="text-gray-400">No repositories found matching the tech stack.</p>
+              )}
             </div>
+
+            {filteredRepos.length > reposPerPage && (
+              <div className="flex justify-center mt-4">
+                <button
+                  onClick={() => paginate(currentPage - 1)}
+                  disabled={currentPage === 1}
+                  className="bg-gray-700 px-4 py-2 rounded mr-2 disabled:bg-gray-500"
+                >
+                  Previous
+                </button>
+                <button
+                  onClick={() => paginate(currentPage + 1)}
+                  disabled={indexOfLastRepo >= filteredRepos.length}
+                  className="bg-gray-700 px-4 py-2 rounded disabled:bg-gray-500"
+                >
+                  Next
+                </button>
+              </div>
+            )}
           </div>
         </>
       ) : (
@@ -98,3 +118,4 @@ function GithubProfileFetcher({ profileData }) {
 }
 
 export default GithubProfileFetcher;
+
