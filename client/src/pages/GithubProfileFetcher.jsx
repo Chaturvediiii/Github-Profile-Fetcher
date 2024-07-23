@@ -76,14 +76,14 @@ function GithubProfileFetcher({ profileData }) {
               <button
                 onClick={() => paginate(currentPage - 1)}
                 disabled={currentPage === 1}
-                className="bg-gray-700 px-4 py-2 rounded mr-2"
+                className="bg-gray-700 px-4 py-2 rounded mr-2 disabled:bg-gray-500"
               >
                 Previous
               </button>
               <button
                 onClick={() => paginate(currentPage + 1)}
                 disabled={indexOfLastRepo >= storedProfileData.repos.length}
-                className="bg-gray-700 px-4 py-2 rounded"
+                className="bg-gray-700 px-4 py-2 rounded disabled:bg-gray-500"
               >
                 Next
               </button>
