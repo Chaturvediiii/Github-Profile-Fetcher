@@ -40,7 +40,7 @@ function GithubProfileFetcher({ profileData }) {
 
   return (
     <div className="bg-gray-900 text-white min-h-screen flex flex-col items-center p-4 md:p-8">
-      {storedProfileData && storedProfileData.name ? (
+      {storedProfileData ? (
         <>
           <div className="bg-gray-800 p-6 rounded-lg flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-8 w-full max-w-5xl">
             <div className="flex-shrink-0">
@@ -51,7 +51,7 @@ function GithubProfileFetcher({ profileData }) {
               />
             </div>
             <div className="text-center md:text-left">
-              <h2 className="text-2xl md:text-3xl font-bold mb-2">{storedProfileData.name}</h2>
+              <h2 className="text-2xl md:text-3xl font-bold mb-2">{storedProfileData.name===null ? 'Name not available' : storedProfileData.name}</h2>
               <p className="text-gray-400 mb-1">Repositories: {storedProfileData.repos.length}</p>
               <p className="text-gray-400 mb-1">Followers: {storedProfileData.followers}</p>
               <p className="text-gray-400 mb-1">Following: {storedProfileData.following}</p>

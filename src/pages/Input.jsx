@@ -59,7 +59,7 @@ export default function Input({ onProfileData }) {
     const skillKeywords = [
       'JavaScript', 'React', 'Node.js', 'Express', 'MongoDB', 'Python',
       'Django', 'Flask', 'Java', 'Spring', 'C++', 'C#', 'PHP', 'Laravel',
-      'Ruby', 'Rails', 'HTML', 'CSS', 'SQL', 'TypeScript', 'GraphQL', 'Go', 'Scala', 
+      'Ruby', 'Rails', 'HTML', 'CSS', 'SQL', 'TypeScript', 'GraphQL', 'Go', 'Scala',
     ];
 
     skillKeywords.forEach((skill) => {
@@ -92,7 +92,8 @@ export default function Input({ onProfileData }) {
         },
       });
 
-      const reposUrl = userResponse.data.repos_url;
+      const userData = userResponse.data;
+      const reposUrl = userData.repos_url;
       const reposResponse = await axios.get(reposUrl, {
         headers: {
           Authorization: `token ${GITHUB_TOKEN}`,
@@ -112,29 +113,31 @@ export default function Input({ onProfileData }) {
         },
       });
 
-      const combinedRepos = [...reposResponse.data, ...starredReposResponse.data];
+      const repos = reposResponse.data;
+      const starredRepos = starredReposResponse.data;
+      const combinedRepos = [...repos, ...starredRepos];
       const uniqueRepos = Array.from(new Map(combinedRepos.map(repo => [repo.id, repo])).values());
 
-      let allSkills = [];
-
-      for (const repo of uniqueRepos) {
+      const readmePromises = uniqueRepos.map(repo => {
         const readmeUrl = `https://api.github.com/repos/${username}/${repo.name}/readme`;
-        try {
-          const readmeResponse = await axios.get(readmeUrl, {
-            headers: {
-              Authorization: `token ${GITHUB_TOKEN}`,
-              Accept: 'application/vnd.github.VERSION.raw',
-            },
-          });
-          const readmeContent = readmeResponse.data;
-          const repoSkills = extractSkillsFromReadme(readmeContent);
-          allSkills = [...new Set([...allSkills, ...repoSkills])];
-        } catch (error) {
-        }
-      }
+        return axios.get(readmeUrl, {
+          headers: {
+            Authorization: `token ${GITHUB_TOKEN}`,
+            Accept: 'application/vnd.github.VERSION.raw',
+          }
+        }).then(response => {
+          const readmeContent = response.data;
+          return extractSkillsFromReadme(readmeContent);
+        }).catch(() => {
+          // Handle the case where README is not available or accessible
+          return [];
+        });
+      });
 
-      const userData = {
-        name: userResponse.data.name,
+      const allSkills = (await Promise.all(readmePromises)).flat();
+
+      const profileData = {
+        name: userData.name,
         repos: uniqueRepos.map(repo => ({
           name: repo.name,
           description: repo.description,
@@ -142,16 +145,16 @@ export default function Input({ onProfileData }) {
           url: repo.html_url,
           stargazers_count: repo.stargazers_count,
         })).sort((a, b) => b.stargazers_count - a.stargazers_count),
-        skills: allSkills,
-        avatar: userResponse.data.avatar_url,
-        location: userResponse.data.location,
-        followers: userResponse.data.followers,
-        following: userResponse.data.following,
+        skills: [...new Set(allSkills)],
+        avatar: userData.avatar_url,
+        location: userData.location,
+        followers: userData.followers,
+        following: userData.following,
       };
 
       clearInterval(interval);
       setIsLoading(false);
-      onProfileData(userData);
+      onProfileData(profileData);
       navigate("/dashboard");
     } catch (error) {
       clearInterval(interval);
@@ -210,5 +213,3 @@ export default function Input({ onProfileData }) {
     </div>
   );
 }
-
-
