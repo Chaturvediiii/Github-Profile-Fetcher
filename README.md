@@ -25,7 +25,7 @@ In today's tech industry, GitHub profiles play a crucial role in evaluating pote
   - Number of repositories
 - List all repositories of the user on the dashboard.
 - Enhance UI with icons and appealing loading screens for better user experience.
-- <p className='text-red-700'>Repositories should have a written Readme</p>
+- **Provided your Repository has a written README.
 
 ## Technologies Used
 
