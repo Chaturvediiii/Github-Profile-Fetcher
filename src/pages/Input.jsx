@@ -8,6 +8,7 @@ import {
   FaHourglassHalf,
   FaExclamationTriangle,
 } from "react-icons/fa";
+import bgImage from '/src/assets/bg.png'
 
 const GITHUB_TOKEN = import.meta.env.VITE_GITHUB_TOKEN;
 
@@ -169,7 +170,7 @@ export default function Input({ onProfileData }) {
       {/* Illustration Section */}
       <div className="w-full md:w-1/2 flex justify-center items-center bg-gray-900">
         <img
-          src="src/assets/bg.png"
+          src={bgImage}
           alt="Illustration"
           className="w-84 h-auto object-cover "
         />
