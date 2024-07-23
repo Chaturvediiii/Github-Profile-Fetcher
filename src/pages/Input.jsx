@@ -9,9 +9,7 @@ import {
   FaExclamationTriangle,
 } from "react-icons/fa";
 
-// Example image URL; replace with your preferred image
-const illustrationImage =
-  "assets/bg.png";
+const GITHUB_TOKEN = import.meta.env.VITE_GITHUB_TOKEN;
 
 export default function Input({ onProfileData }) {
   const [githubUrl, setGithubUrl] = useState("");
@@ -51,6 +49,28 @@ export default function Input({ onProfileData }) {
     },
   ];
 
+  const escapeRegex = (string) => {
+    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  };
+
+  const extractSkillsFromReadme = (readmeContent) => {
+    const skills = [];
+    const skillKeywords = [
+      'JavaScript', 'React', 'Node.js', 'Express', 'MongoDB', 'Python',
+      'Django', 'Flask', 'Java', 'Spring', 'C++', 'C#', 'PHP', 'Laravel',
+      'Ruby', 'Rails', 'HTML', 'CSS', 'SQL', 'TypeScript', 'GraphQL'
+    ];
+
+    skillKeywords.forEach((skill) => {
+      const regex = new RegExp(`\\b${escapeRegex(skill)}\\b`, 'i');
+      if (regex.test(readmeContent)) {
+        skills.push(skill);
+      }
+    });
+
+    return skills;
+  };
+
   const handleFetch = async () => {
     setError(null);
     const username = githubUrl.split("/").pop();
@@ -63,21 +83,78 @@ export default function Input({ onProfileData }) {
     }, 2000);
 
     try {
-      const response = await axios.get(
-        `http://localhost:3000/api/github/${username}`
-      );
+      const githubApiUrl = `https://api.github.com/users/${username}`;
+
+      const userResponse = await axios.get(githubApiUrl, {
+        headers: {
+          Authorization: `token ${GITHUB_TOKEN}`,
+        },
+      });
+
+      const reposUrl = userResponse.data.repos_url;
+      const reposResponse = await axios.get(reposUrl, {
+        headers: {
+          Authorization: `token ${GITHUB_TOKEN}`,
+        },
+        params: {
+          per_page: 100,
+        },
+      });
+
+      const starredReposUrl = `https://api.github.com/users/${username}/starred`;
+      const starredReposResponse = await axios.get(starredReposUrl, {
+        headers: {
+          Authorization: `token ${GITHUB_TOKEN}`,
+        },
+        params: {
+          per_page: 100,
+        },
+      });
+
+      const combinedRepos = [...reposResponse.data, ...starredReposResponse.data];
+      const uniqueRepos = Array.from(new Map(combinedRepos.map(repo => [repo.id, repo])).values());
+
+      let allSkills = [];
+
+      for (const repo of uniqueRepos) {
+        const readmeUrl = `https://api.github.com/repos/${username}/${repo.name}/readme`;
+        try {
+          const readmeResponse = await axios.get(readmeUrl, {
+            headers: {
+              Authorization: `token ${GITHUB_TOKEN}`,
+              Accept: 'application/vnd.github.VERSION.raw',
+            },
+          });
+          const readmeContent = readmeResponse.data;
+          const repoSkills = extractSkillsFromReadme(readmeContent);
+          allSkills = [...new Set([...allSkills, ...repoSkills])];
+        } catch (error) {
+        }
+      }
+
+      const userData = {
+        name: userResponse.data.name,
+        repos: uniqueRepos.map(repo => ({
+          name: repo.name,
+          description: repo.description,
+          language: repo.language,
+          url: repo.html_url,
+          stargazers_count: repo.stargazers_count,
+        })).sort((a, b) => b.stargazers_count - a.stargazers_count),
+        skills: allSkills,
+        avatar: userResponse.data.avatar_url,
+        location: userResponse.data.location,
+        followers: userResponse.data.followers,
+        following: userResponse.data.following,
+      };
+
       clearInterval(interval);
       setIsLoading(false);
-      onProfileData(response.data);
+      onProfileData(userData);
       navigate("/dashboard");
     } catch (error) {
       clearInterval(interval);
-      console.error("Error fetching GitHub data:", error);
-      setError(
-        error.response
-          ? error.response.data.message
-          : "Error fetching GitHub data"
-      );
+      setError(error.response ? error.response.data.message : "Error fetching GitHub data");
       setIsLoading(false);
     }
   };
@@ -107,12 +184,9 @@ export default function Input({ onProfileData }) {
           </div>
         ) : (
           <div className="bg-gray-800 p-6 rounded-md shadow-md w-full max-w-md">
-            <h1 className="text-2xl font-bold text-white mb-4">
-              Enter GitHub Username
-            </h1>
+            <h1 className="text-2xl font-bold text-white mb-4">Enter GitHub Username</h1>
             <p className="text-gray-400 mb-4">
-              To fetch a GitHub profile, please enter the username in the
-              format: <strong>username</strong>. We will
+              To fetch a GitHub profile, please enter the username in the format: <strong>username</strong>. We will
               retrieve the profile details and display them for you.
             </p>
             <input
@@ -135,3 +209,5 @@ export default function Input({ onProfileData }) {
     </div>
   );
 }
+
+
