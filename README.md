@@ -1,10 +1,10 @@
-# GitHub Extractor
+# GitHub Profile Fetcher
 
-GitHub Extractor is a React application designed to streamline the process of retrieving and displaying essential GitHub profile information. This tool is especially useful for recruiters and hiring managers who want a quick and comprehensive view of a candidate's GitHub activity and skills.
+GitHub Profile Fetcher is a React application designed to streamline the process of retrieving and displaying essential GitHub profile information. This tool is especially useful for recruiters and hiring managers who want a quick and comprehensive view of a candidate's GitHub activity and skills.
 
-## Why GitHub Extractor?
+## Why GitHub Profile Fetcher?
 
-In today's tech industry, GitHub profiles play a crucial role in evaluating potential candidates. However, manually checking each profile can be time-consuming and inefficient. GitHub Extractor addresses this issue by providing a simple and effective way to gather all necessary details at a glance.
+In today's tech industry, GitHub profiles play a crucial role in evaluating potential candidates. However, manually checking each profile can be time-consuming and inefficient. GitHub Profile Fetcher addresses this issue by providing a simple and effective way to gather all necessary details at a glance.
 
 ### Key Benefits
 
@@ -25,7 +25,7 @@ In today's tech industry, GitHub profiles play a crucial role in evaluating pote
   - Number of repositories
 - List all repositories of the user on the dashboard.
 - Enhance UI with icons and appealing loading screens for better user experience.
-- <p className='text-red-700'>Repositories should have a written Readme</p>
+- **Provided your Repository has a written README.
 
 ## Technologies Used
 
