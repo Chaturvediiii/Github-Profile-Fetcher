@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 
-function GithubProfileFetcher({ profileData }) {
+export default function GithubProfileFetcher({ profileData }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [storedProfileData, setStoredProfileData] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
@@ -25,11 +24,11 @@ function GithubProfileFetcher({ profileData }) {
   }, [searchTerm, storedProfileData]);
 
   const filterRepos = (keyword) => {
-    const filtered = storedProfileData.repos.filter(repo =>
+    const filtered = storedProfileData.repos.filter((repo) =>
       repo.language?.toLowerCase().includes(keyword.toLowerCase())
     );
     setFilteredRepos(filtered);
-    setCurrentPage(1); // Reset to first page on new search
+    setCurrentPage(1);
   };
 
   const indexOfLastRepo = currentPage * reposPerPage;
@@ -51,11 +50,24 @@ function GithubProfileFetcher({ profileData }) {
               />
             </div>
             <div className="text-center md:text-left">
-              <h2 className="text-2xl md:text-3xl font-bold mb-2">{storedProfileData.name===null ? 'Name not available' : storedProfileData.name}</h2>
-              <p className="text-gray-400 mb-1">Repositories: {storedProfileData.repos.length}</p>
-              <p className="text-gray-400 mb-1">Followers: {storedProfileData.followers}</p>
-              <p className="text-gray-400 mb-1">Following: {storedProfileData.following}</p>
-              <p className="text-gray-400">Skills: {storedProfileData.skills?.join(", ") || "No skills listed"}</p>
+              <h2 className="text-2xl md:text-3xl font-bold mb-2">
+                {storedProfileData.name === null
+                  ? "Name not available"
+                  : storedProfileData.name}
+              </h2>
+              <p className="text-gray-400 mb-1">
+                Repositories: {storedProfileData.repos.length}
+              </p>
+              <p className="text-gray-400 mb-1">
+                Followers: {storedProfileData.followers}
+              </p>
+              <p className="text-gray-400 mb-1">
+                Following: {storedProfileData.following}
+              </p>
+              <p className="text-gray-400">
+                Skills:{" "}
+                {storedProfileData.skills?.join(", ") || "No skills listed"}
+              </p>
             </div>
           </div>
 
@@ -76,15 +88,26 @@ function GithubProfileFetcher({ profileData }) {
                   <div key={repo.name} className="bg-gray-800 p-4 rounded">
                     <h3 className="text-xl font-bold mb-2">{repo.name}</h3>
                     <p className="text-gray-400 mb-2">{repo.description}</p>
-                    <p className="text-gray-400">Tech Stack: {repo.language || "N/A"}</p>
-                    <p className="text-gray-400">Stars: {repo.stargazers_count}</p>
-                    <a href={repo.url} target="_blank" rel="noopener noreferrer" className="text-blue-400 mt-2 inline-block">
+                    <p className="text-gray-400">
+                      Tech Stack: {repo.language || "N/A"}
+                    </p>
+                    <p className="text-gray-400">
+                      Stars: {repo.stargazers_count}
+                    </p>
+                    <a
+                      href={repo.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-400 mt-2 inline-block"
+                    >
                       View Repository
                     </a>
                   </div>
                 ))
               ) : (
-                <p className="text-gray-400">No repositories found matching the tech stack.</p>
+                <p className="text-gray-400">
+                  No repositories found matching the tech stack.
+                </p>
               )}
             </div>
 
@@ -114,7 +137,3 @@ function GithubProfileFetcher({ profileData }) {
     </div>
   );
 }
-
-export default GithubProfileFetcher;
-
-

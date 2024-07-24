@@ -170,7 +170,6 @@ export default function Input({ onProfileData }) {
 
   return (
     <div className="h-screen flex flex-col md:flex-row">
-      {/* Illustration Section */}
       <div className="w-full md:w-1/2 flex justify-center items-center bg-gray-900">
         <img
           src={bgImage}
@@ -178,8 +177,6 @@ export default function Input({ onProfileData }) {
           className="w-84 h-auto object-cover "
         />
       </div>
-
-      {/* Form Section */}
       <div className="w-full md:w-1/2 flex flex-col justify-center items-center bg-gray-900 p-4 md:p-8">
         {isLoading ? (
           <div className="flex flex-col items-center justify-center text-white bg-gray-800 p-6 rounded-lg shadow-lg">
