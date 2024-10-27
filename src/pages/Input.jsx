@@ -57,9 +57,8 @@ export default function Input({ onProfileData }) {
   const extractSkillsFromReadme = (readmeContent) => {
     const skills = [];
     const skillKeywords = [
-      'JavaScript', 'React', 'Node.js', 'Express', 'MongoDB', 'Python',
-      'Django', 'Flask', 'Java', 'Spring', 'C++', 'C#', 'PHP', 'Laravel',
-      'Ruby', 'Rails', 'HTML', 'CSS', 'SQL', 'TypeScript', 'GraphQL', 'Go', 'Scala',
+     'JavaScript', 'React', 'Node.js', 'Express', 'MongoDB', 'Python', 'Django', 'Flask', 'Java', 'Spring', 'C++', 'C#', 'PHP', 'Laravel', 'Ruby', 'Rails', 'HTML', 'CSS', 'SQL', 'TypeScript', 'GraphQL', 'Go', 'Scala', 'Swift', 'Kotlin', 'Rust', 'Angular', 'Vue.js', 'Svelte', 'Next.js', 'Nuxt.js', 'Redux', 'jQuery', 'Bootstrap', 'Tailwind CSS', 'SASS', 'LESS', 'PostgreSQL', 'MySQL', 'SQLite', 'MariaDB', 'Firebase', 'AWS', 'Azure', 'Google Cloud', 'Docker', 'Kubernetes', 'Terraform', 'Ansible', 'Chef', 'Puppet', 'Jenkins', 'Git', 'GitHub', 'GitLab', 'Bitbucket', 'Linux', 'Unix', 'Shell Scripting', 'PowerShell', 'Elixir', 'Phoenix', 'Haskell', 'Erlang', 'R', 'Matlab', 'TensorFlow', 'PyTorch', 'Keras', 'Pandas', 'NumPy', 'Scikit-Learn', 'Tableau', 'Power BI', 'Snowflake', 'Apache Kafka', 'Apache Spark', 'Hadoop', 'Airflow', 'RabbitMQ', 'Redis', 'Elasticsearch', 'Solr', 'Salesforce', 'SAP', 'Oracle', 'Figma', 'Adobe XD', 'Sketch', 'InVision', 'Blender', 'Unity', 'Unreal Engine', 'Web3', 'Blockchain', 'Solidity', 'Hardhat', 'Truffle', 'Polkadot', 'Ethereum', 'Smart Contracts', 'React Native', 'Flutter', 'Xamarin', 'Ionic', 'Objective-C', '3D Modeling', 'Augmented Reality (AR)', 'Virtual Reality (VR)', 'Machine Learning', 'Deep Learning', 'Natural Language Processing (NLP)', 'Computer Vision', 'Data Science', 'Data Analysis', 'Business Intelligence', 'Big Data', 'Cybersecurity', 'Penetration Testing', 'Ethical Hacking', 'Network Security', 'Cryptography', 'DevOps', 'CI/CD', 'Agile', 'Scrum', 'Kanban'
+
     ];
 
     skillKeywords.forEach((skill) => {
