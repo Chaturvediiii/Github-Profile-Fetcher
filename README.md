@@ -33,3 +33,5 @@ In today's tech industry, GitHub profiles play a crucial role in evaluating pote
 - Tailwind CSS
 - Axios for API requests
 - GitHub API
+
+This is just the beginning of an incredible journey! 🎉 What you’re seeing is Version 1 of my app—your gateway to extracting essential, yet powerful features from GitHub. But hold on, because this is just the start! 🚀 I’ve got a slew of exciting features in the pipeline that will take this application to the next level. Stay tuned for the awesome upgrades coming soon! 🌟
