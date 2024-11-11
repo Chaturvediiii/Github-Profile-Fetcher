@@ -22,7 +22,6 @@ export default function GithubProfileFetcher({ profileData }) {
     if (storedProfileData) {
       filterRepos(searchTerm);
     }
-    console.log(storedProfileData)
   }, [searchTerm, storedProfileData]);
 
   const filterRepos = (keyword) => {
@@ -61,10 +60,13 @@ export default function GithubProfileFetcher({ profileData }) {
                 Repositories: {storedProfileData.repos.length}
               </p>
               <p className="text-gray-400 mb-1">
-                Followers: {storedProfileData.followers}
+                About: {storedProfileData.bio}
               </p>
               <p className="text-gray-400 mb-1">
-                Following: {storedProfileData.following}
+                Location: {storedProfileData.location}
+              </p>
+              <p className="text-gray-400 mb-1">
+                Contact Details: {storedProfileData.email}
               </p>
               <p className="text-gray-400">
                 Skills:{" "}
