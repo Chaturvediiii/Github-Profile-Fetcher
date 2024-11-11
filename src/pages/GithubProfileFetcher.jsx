@@ -15,12 +15,14 @@ export default function GithubProfileFetcher({ profileData }) {
       setStoredProfileData(profileData);
       localStorage.setItem("profileData", JSON.stringify(profileData));
     }
+
   }, [profileData]);
 
   useEffect(() => {
     if (storedProfileData) {
       filterRepos(searchTerm);
     }
+    console.log(storedProfileData)
   }, [searchTerm, storedProfileData]);
 
   const filterRepos = (keyword) => {
@@ -87,9 +89,8 @@ export default function GithubProfileFetcher({ profileData }) {
                 currentRepos.map((repo) => (
                   <div key={repo.name} className="bg-gray-800 p-4 rounded">
                     <h3 className="text-xl font-bold mb-2">{repo.name}</h3>
-                    <p className="text-gray-400 mb-2">{repo.description}</p>
                     <p className="text-gray-400">
-                      Tech Stack: {repo.language || "N/A"}
+                      Language : {repo.language || "N/A"}
                     </p>
                     <p className="text-gray-400">
                       Stars: {repo.stargazers_count}

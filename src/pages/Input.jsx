@@ -75,92 +75,88 @@ export default function Input({ onProfileData }) {
     setError(null);
     const username = githubUrl.split("/").pop();
     setIsLoading(true);
-
+  
     let messageIndex = 0;
     const interval = setInterval(() => {
       setLoadingMessage(loadingMessages[messageIndex]);
       messageIndex = (messageIndex + 1) % loadingMessages.length;
     }, 2000);
-
+  
     try {
       const githubApiUrl = `https://api.github.com/users/${username}`;
-
+  
+      // Fetch user data
       const userResponse = await axios.get(githubApiUrl, {
-        headers: {
-          Authorization: `token ${GITHUB_TOKEN}`,
-        },
+        headers: { Authorization: `token ${GITHUB_TOKEN}` },
       });
-
+  
       const userData = userResponse.data;
       const reposUrl = userData.repos_url;
       const reposResponse = await axios.get(reposUrl, {
-        headers: {
-          Authorization: `token ${GITHUB_TOKEN}`,
-        },
-        params: {
-          per_page: 100,
-        },
+        headers: { Authorization: `token ${GITHUB_TOKEN}` },
+        params: { per_page: 100 },
       });
-
-      const starredReposUrl = `https://api.github.com/users/${username}/starred`;
-      const starredReposResponse = await axios.get(starredReposUrl, {
-        headers: {
-          Authorization: `token ${GITHUB_TOKEN}`,
-        },
-        params: {
-          per_page: 100,
-        },
-      });
-
-      const repos = reposResponse.data;
-      const starredRepos = starredReposResponse.data;
-      const combinedRepos = [...repos, ...starredRepos];
-      const uniqueRepos = Array.from(new Map(combinedRepos.map(repo => [repo.id, repo])).values());
-
-      const readmePromises = uniqueRepos.map(repo => {
+  
+      // Filter strictly for user-owned repositories (not organizations or forks)
+      const repos = reposResponse.data.filter(
+        (repo) => repo.owner.login === username && repo.owner.type === "User" && !repo.fork
+      );
+  
+      const readmePromises = repos.map((repo) => {
         const readmeUrl = `https://api.github.com/repos/${username}/${repo.name}/readme`;
-        return axios.get(readmeUrl, {
-          headers: {
-            Authorization: `token ${GITHUB_TOKEN}`,
-            Accept: 'application/vnd.github.VERSION.raw',
-          }
-        }).then(response => {
-          const readmeContent = response.data;
-          return extractSkillsFromReadme(readmeContent);
-        }).catch(() => {
-          // Handle the case where README is not available or accessible
-          return [];
-        });
+        return axios
+          .get(readmeUrl, {
+            headers: {
+              Authorization: `token ${GITHUB_TOKEN}`,
+              Accept: "application/vnd.github.VERSION.raw",
+            },
+          })
+          .then((response) => {
+            const readmeContent = response.data;
+  
+            // Process README to find skills in specific sections
+            return extractSkillsFromReadme(readmeContent);
+          })
+          .catch(() => {
+            // If README not available, ignore this repo
+            return [];
+          });
       });
-
+  
+      // Combine and deduplicate extracted skills
       const allSkills = (await Promise.all(readmePromises)).flat();
-
+      const uniqueSkills = [...new Set(allSkills)];
+  
+      // Prepare profile data to display
       const profileData = {
         name: userData.name,
-        repos: uniqueRepos.map(repo => ({
+        repos: repos.map((repo) => ({
           name: repo.name,
           description: repo.description,
           language: repo.language,
           url: repo.html_url,
           stargazers_count: repo.stargazers_count,
         })).sort((a, b) => b.stargazers_count - a.stargazers_count),
-        skills: [...new Set(allSkills)],
+        skills: uniqueSkills,
         avatar: userData.avatar_url,
         location: userData.location,
         followers: userData.followers,
         following: userData.following,
       };
-
+  
       clearInterval(interval);
       setIsLoading(false);
       onProfileData(profileData);
       navigate("/dashboard");
     } catch (error) {
       clearInterval(interval);
-      setError(error.response ? error.response.data.message : "Error fetching GitHub data");
+      setError(
+        error.response ? error.response.data.message : "Error fetching GitHub data"
+      );
       setIsLoading(false);
     }
   };
+  
 
   useEffect(() => {
     localStorage.removeItem("profileData");
