@@ -91,11 +91,19 @@ export default function Input({ onProfileData }) {
       });
   
       const userData = userResponse.data;
+      if(userData.login!==username){
+        clearInterval(interval);
+      setError(
+        error.response ? error.response.data.message : "Error fetching GitHub data"
+      );
+      setIsLoading(false);
+      }
       const reposUrl = userData.repos_url;
       const reposResponse = await axios.get(reposUrl, {
         headers: { Authorization: `token ${GITHUB_TOKEN}` },
         params: { per_page: 100 },
       });
+
   
       // Filter strictly for user-owned repositories (not organizations or forks)
       const repos = reposResponse.data.filter(
@@ -185,6 +193,7 @@ export default function Input({ onProfileData }) {
               To fetch a GitHub profile, please enter the username in the format: <strong>username</strong>. We will
               retrieve the profile details and display them for you.
             </p>
+            <p className="text-red-600">Note : Username is case-sensitive</p>
             <input
               type="text"
               value={githubUrl}
