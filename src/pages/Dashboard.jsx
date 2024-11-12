@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-export default function GithubProfileFetcher({ profileData }) {
+export default function Dashbboard({ profileData }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [storedProfileData, setStoredProfileData] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
