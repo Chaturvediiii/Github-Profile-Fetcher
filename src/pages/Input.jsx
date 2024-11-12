@@ -109,8 +109,8 @@ export default function Input({ onProfileData }) {
         skills: uniqueSkills,
         avatar: userData.avatar_url,
         location: userData.location,
-        followers: userData.followers,
-        following: userData.following,
+        bio : userData.bio,
+        email : userData.email,
       };
 
       clearInterval(interval);
