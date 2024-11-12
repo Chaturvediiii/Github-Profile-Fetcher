@@ -64,6 +64,12 @@ export default function Input({ onProfileData }) {
         setIsLoading(false)
         return;
       }
+      if(userData.name===null){
+        clearInterval(interval);
+        setError("User not found");
+        setIsLoading(false)
+        return;
+      }
 
       const reposResponse = await axios.get(userData.repos_url, {
         headers: { Authorization: `token ${GITHUB_TOKEN}` },
