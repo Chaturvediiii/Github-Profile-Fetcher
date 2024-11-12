@@ -74,6 +74,7 @@ export default function Input({ onProfileData }) {
   const handleFetch = async () => {
     setError(null);
     const username = githubUrl.split("/").pop();
+
     setIsLoading(true);
   
     let messageIndex = 0;
@@ -81,6 +82,15 @@ export default function Input({ onProfileData }) {
       setLoadingMessage(loadingMessages[messageIndex]);
       messageIndex = (messageIndex + 1) % loadingMessages.length;
     }, 2000);
+
+    if(username.length===0){
+      clearInterval(interval);
+    setError(
+     "Username field cannot be empty"
+    );
+    setIsLoading(false);
+    return
+    }
   
     try {
       const githubApiUrl = `https://api.github.com/users/${username}`;
