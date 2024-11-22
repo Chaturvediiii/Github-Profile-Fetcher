@@ -57,6 +57,7 @@ export default function Input({ onProfileData }) {
       const { data: userData } = await axios.get(`https://api.github.com/users/${username}`, {
         headers: { Authorization: `token ${GITHUB_TOKEN}` },
       });
+      console.log(username)
 
       if(userData.login!==username){
         clearInterval(interval);
@@ -64,7 +65,8 @@ export default function Input({ onProfileData }) {
         setIsLoading(false)
         return;
       }
-      if(userData.name===null){
+      const name = userData.login
+      if(userData.login===null){
         clearInterval(interval);
         setError("User not found");
         setIsLoading(false)
@@ -96,7 +98,7 @@ export default function Input({ onProfileData }) {
       const uniqueSkills = [...new Set(allSkills)];
 
       const profileData = {
-        name: userData.name,
+        name: userData.login,
         repos: repos
           .map((repo) => ({
             name: repo.name,
@@ -146,13 +148,12 @@ export default function Input({ onProfileData }) {
             <p className="text-gray-400 mb-4">
               To fetch a GitHub profile, please enter the username in the format: <strong>username</strong>.
             </p>
-            <p className="text-red-600">Note : Username is case-sensitive</p>
             <input
               type="text"
               value={githubUrl}
               onChange={(e) => setGithubUrl(e.target.value)}
               placeholder="e.g. username"
-              className="p-3 bg-gray-700 border border-gray-600 rounded-md text-white w-full mb-4"
+              className="p-3 bg-gray-700 border border-gray-600 rounded-md text-white w-full mb-5"
             />
             <button
               onClick={handleFetch}
